@@ -1,0 +1,22 @@
+{% load staticfiles %}
+{% load markup %}
+
+
+<h2>{{ event.title }}</h2>
+
+{% with backer_count=event.backer_set.count %}
+
+    <div class="progress">
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ event.backing_percentage }}"
+             aria-valuemin="0"
+             aria-valuemax="100" style="width: {{ event.backing_percentage }}%">
+            <span class="sr-only">{{ backer_count }}/{{ event.minimum_backers }} Backers</span>
+        </div>
+    </div>
+
+    <img src="{{ event.operator.image.url }}" width="100px"/>
+    {{ backer_count }}/{{ event.minimum_backers }} Backers
+
+{% endwith %}
+
+{{ event.description|markdown }}

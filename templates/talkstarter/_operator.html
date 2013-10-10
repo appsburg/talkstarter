@@ -1,0 +1,9 @@
+{% load markup %}
+<em>{{ operator.name }}</em>
+{{ operator.description|markdown }}
+{% if operator.twitter_handle %}
+    <a href="http://twitter.com/{{ operator.twitter_handle }}/" class="btn btn-default">@{{ operator.twitter_handle }} on Twitter</a>
+{% endif %}
+{% if operator.link %}
+    <a href="{{ operator.link }}" class="btn btn-default">{{ operator.link }}</a>
+{% endif %}

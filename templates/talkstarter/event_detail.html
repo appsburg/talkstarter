@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load markup %}
+{% block talkstarter_content %}
+
+    <img src="{% static "appsburg.png" %}" alt="Appsburg" widht="200" height="200">
+    <hr/>
+
+    {% with event=object %}
+
+        {% with backer_count=event.backer_set.count %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>{{ event.title }} <span class="text-muted">{{ event.date }}</span></h2>
+
+                    <hr/>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-2">
+                    <img src="{{ event.operator.image.url }}" class="img-circle img-responsive"/>
+                    <hr/>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar"
+                             aria-valuenow="{{ event.backing_percentage }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100" style="width: {{ event.backing_percentage }}%">
+                            <span class="sr-only">{{ backer_count }}/{{ event.minimum_backers }} Backers</span>
+                        </div>
+                    </div>
+                    {% if event.is_backed %}
+                    {% else %}
+                        <strong>
+                            {% if backer_count == 1 %}
+                                1 person is
+                            {% else %}
+                                {{ backer_count }} people are
+                            {% endif %}
+                            interested in this talk, but we need at least {{ event.minimum_backers }} backers to make
+                            it happen.
+                        </strong>
+
+                        Click the "I'll be there" button now, to pledge your interest.
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {{ event.description|markdown }}
+
+                    <a class="btn btn-lg btn-success btn-block">I will definitely be there!</a>
+                </div>
+                <div class="col-md-4">
+
+                    <p>
+                        <em>Time of Event</em><br>
+                        {{ event.date }}
+                    </p>
+                    <p>
+                        <em>Backable Until</em><br>
+                        {{ event.backable_until }}
+                    </p>
+
+                    {% with operator=object.operator %}
+                        {% include 'talkstarter/_operator.html' %}
+                    {% endwith %}
+
+
+                </div>
+            </div>
+
+            {% if backer_count > 0 %}
+
+                <hr/>
+
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-2">
+
+                        <h3>Backers</h3>
+
+                        {% for backer in event.backer_set.all %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img src="http://a0.twimg.com/sticky/default_profile_images/default_profile_2_normal.png"
+                                         class="img-circle img-responsive"/>
+                                </div>
+                                <div class="col-md-10">
+                                    {% if backer.name %}
+                                        <strong>{{ backer.name }}</strong>
+                                    {% else %}
+                                        <span class="text-muted">Anonymous Backer</span>
+                                    {% endif %}
+
+                                    {% if backer.twitter_handle %}
+                                        <em><a href="http://twitter.com/{{ backer.twitter_handle }}/">@{{ backer.twitter_handle }}</a></em>
+                                    {% endif %}
+
+                                    {% if backer.comment %}
+                                        <p>{{ backer.comment }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if not forloop.last %}
+                                <hr/>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+
+{% endblock %}
